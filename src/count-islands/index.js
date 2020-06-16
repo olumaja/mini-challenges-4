@@ -14,12 +14,11 @@ function countIslands(grid) {
   let nonzeroAdjacentArray;
 
   for(let i = 0; i < grid.length; i++){
-    if(grid[i].some(x => x != 0)){
+    if(grid[i].some(x => x !== 0)){
       islandStatus = true;
       break;
     }
     else{
-      console.log(islandCount);
       return islandCount;
     }
   }
@@ -31,7 +30,7 @@ function countIslands(grid) {
       for(let b = 0; b < grid[a].length; b++){
 
         if(visitedArray.length === 0){
-          adjacentArray = adjacent(grid.length - 1, grid[0].length - 1, [0, 0]);
+          adjacentArray = adjacent(grid.length - 1, grid[a].length - 1, [0, 0]);
           visitedArray.push([0, 0]);
           outputArray.push([0, 0]);
 
@@ -101,7 +100,6 @@ function countIslands(grid) {
 
     }
 
-    console.log(islandCount);
     return islandCount;
 
   }
@@ -137,7 +135,6 @@ function countIslands(grid) {
       for(let j = 0; j < visitedArray.length; j++){
         let [visitedRow, visitedColumn] = visitedArray[j];
         if(visitedRow === adjacentRow && visitedColumn === adjacentColumn){
-
           status = false;
           break;
         }
