@@ -9,9 +9,6 @@ function countIslands(grid) {
   let queueArray = [];
   let visitedArray = [];
   let outputArray = [];
-  let adjacentArray = [];
-  let newRowColumn = false;
-  let nonzeroAdjacentArray;
 
   for(let i = 0; i < grid.length; i++){
     if(grid[i].some(x => x !== 0)){
@@ -30,6 +27,8 @@ function countIslands(grid) {
       for(let b = 0; b < grid[a].length; b++){
 
         if(visitedArray.length === 0){
+          let adjacentArray;
+          let nonzeroAdjacentArray;
           adjacentArray = adjacent(grid.length - 1, grid[a].length - 1, [0, 0]);
           visitedArray.push([0, 0]);
           outputArray.push([0, 0]);
@@ -40,18 +39,13 @@ function countIslands(grid) {
           outputArray.push(...nonzeroAdjacentArray);
           queueArray.push(...nonzeroAdjacentArray);
 
-          do{
-            adjacentArray = adjacent(grid.length - 1, grid[0].length - 1, queueArray[0]);
-            nonzeroAdjacentArray = nonzeroAdjacent(adjacentArray);
-            queueArray.shift();
-
-            notVisited(nonzeroAdjacentArray, visitedArray);
-
-         }while(queueArray.length !== 0);
-         islandCount++;
+          removeFirstQueueItem(grid.length - 1, grid[a].length - 1);
+          islandCount++;
 
         }
         else{
+
+          let newRowColumn = false;
 
           for(let a = 0; a < grid.length; a++){
 
@@ -78,16 +72,9 @@ function countIslands(grid) {
                 outputArray.push([currentRow, currentColumn]);
                 queueArray.push([currentRow, currentColumn]);
 
-                do{
-                  adjacentArray = adjacent(grid.length - 1, grid[a].length - 1, queueArray[0]);
-                  nonzeroAdjacentArray = nonzeroAdjacent(adjacentArray);
-                  queueArray.shift();
-
-                  notVisited(nonzeroAdjacentArray, visitedArray);
-
-               }while(queueArray.length !== 0);
-               islandCount++;
-
+                removeFirstQueueItem(grid.length - 1, grid[a].length - 1);
+                islandCount++;
+                
               }
 
             }
@@ -126,12 +113,12 @@ function countIslands(grid) {
 
   }
 
-  function notVisited(nonzeroAdjacentArray, visitedArray){
+  function notVisited(nonzero, visitedArray){
 
     let status = false;
-    for(let i = 0; i < nonzeroAdjacentArray.length; i++){
+    for(let i = 0; i < nonzero.length; i++){
 
-      let [adjacentRow, adjacentColumn] = nonzeroAdjacentArray[i];
+      let [adjacentRow, adjacentColumn] = nonzero[i];
       for(let j = 0; j < visitedArray.length; j++){
         let [visitedRow, visitedColumn] = visitedArray[j];
         if(visitedRow === adjacentRow && visitedColumn === adjacentColumn){
@@ -146,11 +133,22 @@ function countIslands(grid) {
         visitedArray.push([adjacentRow, adjacentColumn]);
         outputArray.push([adjacentRow, adjacentColumn]);
         queueArray.push([adjacentRow, adjacentColumn]);
-
-        status = false;
       }
 
     }
+
+  }
+
+  function removeFirstQueueItem(rowLength, columnLength){
+
+    do{
+      let arrayAdjacent = adjacent(rowLength, columnLength, queueArray[0]);
+      let arrayNonzeroAdjacent = nonzeroAdjacent(arrayAdjacent);
+      queueArray.shift();
+
+      notVisited(arrayNonzeroAdjacent, visitedArray);
+
+   }while(queueArray.length !== 0);
 
   }
 
