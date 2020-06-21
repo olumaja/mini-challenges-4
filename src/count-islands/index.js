@@ -47,10 +47,6 @@ function countIslands(grid) {
 
           let newRowColumn = false;
 
-          for(let a = 0; a < grid.length; a++){
-
-            for(let b = 0; b < grid[a].length; b++){
-
               let [currentRow, currentColumn] = [a, b];
 
               for(let c = 0; c < visitedArray.length; c++){
@@ -74,19 +70,14 @@ function countIslands(grid) {
 
                 removeFirstQueueItem(grid.length - 1, grid[a].length - 1);
                 islandCount++;
-                
+
               }
-
-            }
-
-          }
 
         }
 
       }
 
     }
-
     return islandCount;
 
   }
