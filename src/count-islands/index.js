@@ -3,7 +3,6 @@
 function countIslands(grid) {
 
   //Breadth First search algorithm method was used to solve this challenge (Graph theory).
-
   let islandCount = 0;
   let islandStatus = false;
   let queueArray = [];
@@ -26,12 +25,12 @@ function countIslands(grid) {
 
       for(let b = 0; b < grid[a].length; b++){
 
-        if(visitedArray.length === 0){
+        if(visitedArray.length === 0 && grid[a][b] === 1){
           let adjacentArray;
           let nonzeroAdjacentArray;
-          adjacentArray = adjacent(grid.length - 1, grid[a].length - 1, [0, 0]);
-          visitedArray.push([0, 0]);
-          outputArray.push([0, 0]);
+          adjacentArray = adjacent(grid.length - 1, grid[a].length - 1, [a, b]);
+          visitedArray.push([a, b]);
+          outputArray.push([a, b]);
 
           nonzeroAdjacentArray = nonzeroAdjacent(adjacentArray);
 

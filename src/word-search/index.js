@@ -3,27 +3,67 @@ function wordSearch(words, word) {
   let visitedArray = [];
   let queueArray = [];
   let adjacentLetters;
-  let correctLetters;
+  let correctLettersArray;
+  let letterCorrect;
+  let spellWord = [];
+  let wordFound = false;
+  let letterLocation = [];
+  let maxWords = 0;
 
-  for(let i = 0; i < word.length - 1; i++){
+  for(let i = 0; i < words.length; i++){
+    maxWords = words[i].length;
+    for(let j = 0; j < maxWords; j++){
 
-    for(let j = 0; j < words.length; j++){
-      for(let k = 0; k < words[j].length; k++){
-        if(words[j][k] === word[i] && visitedArray.length === 0){
-          visitedArray.push([j, k]);
-          adjacentLetters = adjacent(words.length - 1, words[i].length - 1, [j, k]);
-          //console.log(adjacentLetters);
-          correctLetters = searchLetter(adjacentLetters, word[i + 1]);
-          visitedArray.push(...correctLetters);
-          queueArray.push(...correctLetters);
-        }
+      if(words[i][j] === word[0]){
+
+        letterLocation.push([i, j]);
+        visitedArray.push([i, j]);
 
       }
+
     }
+  }
+
+  for(let k = 0; k < letterLocation.length; k++){
+
+    spellWord.push(returnLetter(words, letterLocation[k])) ;
+
+    adjacentLetters = adjacent(words.length - 1, maxWords - 1, letterLocation[k]);
+    correctLettersArray = searchLetter(adjacentLetters, word[spellWord.length]);
+    letterCorrect = notVisited(correctLettersArray, visitedArray);
+    queueArray.push(...letterCorrect);
+
+    spellWord.push(returnLetter(words, ...letterCorrect));
+
+    while(spellWord.length < word.length){
+
+      adjacentLetters = adjacent(words.length - 1, maxWords - 1, queueArray[0]);
+      queueArray.shift();
+      correctLettersArray = searchLetter(adjacentLetters, word[spellWord.length]);
+      letterCorrect = notVisited(correctLettersArray, visitedArray);
+
+       if(letterCorrect.length > 0){
+         queueArray.push(...letterCorrect);
+         spellWord.push(returnLetter(words, ...letterCorrect));
+       }
+       else{break}
+
+    }
+
+    console.log(spellWord);
+    console.log(k);
+
+      if(spellWord.join('') === word){
+        wordFound = true
+        console.log(wordFound);
+        return
+      }
 
   }
 
-  console.log(visitedArray);
+  console.log(wordFound);
+
+
 
   function adjacent(rowSize, columnSize, cordinate){
 
@@ -43,15 +83,54 @@ function wordSearch(words, word) {
     })
   }
 
+  function returnLetter(words, correctLettersArray){
+    let correctRow;
+    let correctColumn;
+
+        [correctRow, correctColumn] = correctLettersArray;
+        return words[correctRow][correctColumn];
+
+
+  }
+
+  function notVisited(correctLetters, visitedArray){
+    let found = false;
+    let result = [];
+
+    for(let i = 0; i < correctLetters.length; i++){
+
+      let [letterRow, letterColumn] = correctLetters[i];
+
+      for(let j = 0; j < visitedArray.length; j++){
+        let [vistedRow, visitedColumn] = visitedArray[j]
+        if(letterRow === vistedRow && letterColumn === visitedColumn){
+          found = false;
+          break;
+        }
+        else if(letterRow !== vistedRow || letterColumn !== visitedColumn){
+          found = true;
+        }
+      }
+
+       if(found){
+        result.push([letterRow, letterColumn]);
+        visitedArray.push([letterRow, letterColumn]);
+       }
+    }
+
+    return result;
+
+  }
+
 }
 
 const words = [
-  ["C", "D", "Y", "C", "X"],
-  ["A", "N", "Y", "Z", "X"],
-  ["T", "F", "Z", "A", "T"],
-  ["M", "D", "B", "U", "T"],
+  ["P", "R", "A", "B", "C"],
+  ["R", "N", "O", "O", "T"],
+  ["E", "A", "I", "O", "O"],
+  ["C", "I", "S", "E", "L"],
 ];
 
-wordSearch(words, "CAT");
+wordSearch(words, "PRECISELY");
 
 module.exports = wordSearch;
